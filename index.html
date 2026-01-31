@@ -1,93 +1,400 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager App</title>
+    <title>TaskFlow</title>
+    <meta name="description" content="A modern task management application">
+
+    <!-- Tailwind CSS -->
     <link href="./assets/src/output.css" rel="stylesheet">
-    <!-- Basic Icons -->
-<link href="https://cdn.boxicons.com/3.0.8/fonts/basic/boxicons.min.css" rel="stylesheet">
-<!-- Filled Icons -->
-<link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
-<!-- Brand Icons -->
-<link href="https://cdn.boxicons.com/3.0.8/fonts/brands/boxicons-brands.min.css" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Custom scrollbar hide */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Sidebar icon hover effect */
+        .sidebar-icon {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sidebar-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .sidebar-icon.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Transitions for Dark Mode */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+        }
+    </style>
 </head>
-<body class="relative bg-gray-50 dark:bg-gray-900 dark:text-gray-100 text-gray-800">
-    <!-- Mobile header -->
-     <header class="flex flex-col px-4 py-2 space-y-2 md:hidden">
-        <section class="flex items-center justify-between px-4 py-4 bg-transparent">
-            <!-- Left : Avatar -->
-            <div class="flex items-center space-x-2">
-                <img 
-                src="./assets/images/profile-photo.jpg" 
-                alt="Photo de profile"
-                class="w-12 h-12 rounded-full cursor-pointer">
-                <div class="flex flex-col">
-                    <span class="text-sm text-gray-500 dark:text-gray-400">Bienvenue</span>
-                    <span class="text-2xl font-bold text-gray-800 dark:text-white">John Doe</span>
+
+<body
+    class="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-sans min-h-screen transition-colors duration-200">
+
+    <!-- ==================== MOBILE HEADER ==================== -->
+    <header class="md:hidden  bg-transparent dark:transparent px-4 py-4">
+        <div class="flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-black text-gray-900 dark:text-white">F<span
+                        class="text-gray-900 dark:text-gray-400">.</span></span>
+            </div>
+            <!-- Right Icons -->
+            <div class="flex items-center gap-2">
+                <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 text-gray-600 dark:text-gray-400 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 text-gray-600 dark:text-gray-400 hidden dark:block"></i>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-gray-500 dark:text-gray-400"></i>
                 </div>
             </div>
-            <!-- Right : Icons -->
-            <div class="flex items-center space-x-1 text-2xl font-bold">
-                <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd" d="M5.25 9a6.75 6.75 0 0 1 13.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 0 1-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 1 1-7.48 0 24.585 24.585 0 0 1-4.831-1.244.75.75 0 0 1-.298-1.205A8.217 8.217 0 0 0 5.25 9.75V9Zm4.502 8.9a2.25 2.25 0 1 0 4.496 0 25.057 25.057 0 0 1-4.496 0Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-                <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
-                    <i class="bx bx-calendar-alt"></i>
-                </button>
-                <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 ease-in-out">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-            </div>
-        </section>
-        <!-- Search field -->
-        <section class="flex items-center justify-between w-full px-4 py-3 bg-gray-100/10 dark:bg-gray-800/10 border border-gray-300 dark:border-gray-700 rounded-lg focus-within:border-purple-500 transition-all duration-300 ease-in-out">
-            <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
-                <input type="text" placeholder="Search" class="w-full h-full bg-transparent outline-none transition-all duration-300 ease-in-out">
-            </div>
-            <div class="flex items-center space-x-2">
-                <!-- Separator -->
-                <div class="w-px h-6 bg-gray-300 dark:bg-gray-700"></div>
-                <button>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path d="M18.75 12.75h1.5a.75.75 0 0 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM12 6a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 6ZM12 18a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 12 18ZM3.75 6.75h1.5a.75.75 0 1 0 0-1.5h-1.5a.75.75 0 0 0 0 1.5ZM5.25 18.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 0 1.5ZM3 12a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5A.75.75 0 0 1 3 12ZM9 3.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM12.75 12a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0ZM9 15.75a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Z" />
-                    </svg>
-                </button>
-            </div>
-        </section>
+        </div>
     </header>
-    <!-- Mobile bottom navbar -->
-    <nav class="fixed bottom-6 left-4 right-4 bg-white dark:bg-gray-800 mb-4 rounded-full shadow-lg flex items-center justify-evenly py-4 md:hidden">
-        <button class="text-purple-600 text-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-                <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-            </svg>
-        </button>
-        <button class="text-gray-500 dark:text-gray-400 text-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
-            </svg>
-        </button>
-        <button class="text-gray-500 text-2xl w-12 h-12 rounded-2xl bg-purple-600 text-white flex items-center justify-center">
-            <i class="bx bx-plus"></i>
-        </button>
-        <button class="text-gray-500 dark:text-gray-400 text-2xl">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clip-rule="evenodd" />
-            </svg>
-        </button>
-        <button class="text-gray-500 dark:text-gray-400 text-2xl">
-            <i class="bx bx-list-ul"></i>
-        </button>
-    </nav>
+
+    <!-- ==================== MAIN LAYOUT ==================== -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- ==================== DESKTOP SIDEBAR ==================== -->
+        <aside
+            class="hidden md:flex md:flex-col md:w-20 bg-gray-900 dark:bg-gray-950 text-white sticky top-0 h-screen items-center py-6 z-20">
+
+            <!-- Logo -->
+            <div class="mb-10">
+                <span class="text-2xl font-black">F<span class="text-gray-500">.</span></span>
+            </div>
+
+            <!-- Navigation Icons -->
+            <nav class="flex-1 flex flex-col items-center gap-4">
+                <button id="nav-dashboard"
+                    class="sidebar-icon active w-12 h-12 rounded-xl flex items-center justify-center text-white"
+                    title="Dashboard">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </button>
+
+                <button id="nav-analytics"
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Analytics">
+                    <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+                </button>
+
+                <button id="nav-tasks"
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Tasks">
+                    <i data-lucide="check-square" class="w-5 h-5"></i>
+                </button>
+
+                <button id="nav-tracking"
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Tracking">
+                    <i data-lucide="clock" class="w-5 h-5"></i>
+                </button>
+
+                <button id="nav-settings"
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Settings">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </button>
+            </nav>
+
+            <!-- Bottom - Theme Toggle & Logout -->
+            <div class="mt-auto flex flex-col gap-4">
+                <button
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Toggle Theme">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                </button>
+                <button
+                    class="sidebar-icon w-12 h-12 rounded-xl flex items-center justify-center text-gray-400 hover:text-white"
+                    title="Logout">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- ==================== MAIN CONTENT AREA ==================== -->
+        <main class="flex-1 flex overflow-hidden bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+
+            <!-- Left Content Panel -->
+            <div
+                class="flex-1 overflow-y-auto scrollbar-hide pb-24 md:pb-8 bg-white dark:bg-gray-800 md:bg-gray-50 md:dark:bg-gray-900 md:rounded-tl-3xl md:rounded-bl-3xl transition-colors duration-200">
+
+                <!-- Header Section -->
+                <header class="px-6 lg:px-10 py-8">
+                    <div class="flex items-center justify-between px-8 bg-gray-100 dark:bg-gray-800 rounded-2xl">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">Hello!</h1>
+                            <p class="text-gray-500 dark:text-gray-400">Let's be productive today.</p>
+                        </div>
+
+                        <!-- Illustration (Changes filter in dark mode) -->
+                        <div class="hidden lg:block w-64 h-auto">
+                            <img src="./assets/images/4630062-removebg-preview.png" alt="">
+                        </div>
+                    </div>
+                </header>
+
+                <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+                <section id="view-dashboard" class="view-section px-6 lg:px-10 py-4 block">
+                    <!-- Section Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Your Dashboard</h2>
+                    </div>
+
+                    <!-- Main Empty State -->
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-10 text-center transition-colors">
+                        <div class="w-40 h-40 mx-auto mb-6 opacity-80 dark:opacity-60">
+                            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                class="w-full h-full">
+                                <circle cx="100" cy="100" r="80" class="fill-gray-50 dark:fill-gray-900" />
+                                <rect x="60" y="50" width="80" height="100" rx="8"
+                                    class="fill-white dark:fill-gray-700 stroke-gray-200 dark:stroke-gray-600"
+                                    stroke-width="2" />
+                                <rect x="75" y="70" width="50" height="4" rx="2"
+                                    class="fill-gray-200 dark:fill-gray-600" />
+                                <rect x="75" y="85" width="40" height="4" rx="2"
+                                    class="fill-gray-200 dark:fill-gray-600" />
+                                <rect x="75" y="100" width="45" height="4" rx="2"
+                                    class="fill-gray-200 dark:fill-gray-600" />
+                                <circle cx="68" cy="72" r="4" class="fill-gray-800 dark:fill-gray-400" />
+                                <circle cx="68" cy="87" r="4" class="fill-gray-800 dark:fill-gray-400" />
+                            </svg>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No tasks yet</h3>
+                        <p class="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                            You're all caught up! Create a new task to get started with your day.
+                        </p>
+
+                        <button
+                            class="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full font-semibold transition-all">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                            Create New Task
+                        </button>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+                        <div
+                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-total">0</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Total Tasks</p>
+                        </div>
+                        <div
+                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <p class="text-3xl font-bold text-gray-900 dark:text-white" id="stat-completed">0</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Completed</p>
+                        </div>
+                        <div
+                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <p class="text-3xl font-bold text-gray-900 dark:text-white">0h</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Tracked Time</p>
+                        </div>
+                        <div
+                            class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <p class="text-3xl font-bold text-gray-900 dark:text-white">0%</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Productivity</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== VIEW 2: ANALYTICS ==================== -->
+                <section id="view-analytics" class="view-section px-6 lg:px-10 py-6 hidden">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Analytics</h2>
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-10 text-center">
+                        <div class="w-40 h-40 mx-auto mb-6 opacity-60">
+                            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                class="w-full h-full">
+                                <rect x="50" y="100" width="20" height="50" rx="4"
+                                    class="fill-gray-300 dark:fill-gray-600" />
+                                <rect x="80" y="80" width="20" height="70" rx="4"
+                                    class="fill-gray-400 dark:fill-gray-500" />
+                                <rect x="110" y="90" width="20" height="60" rx="4"
+                                    class="fill-gray-500 dark:fill-gray-400" />
+                                <path d="M55 95 L85 75 L115 85 L145 65" class="stroke-gray-800 dark:stroke-white"
+                                    stroke-width="3" stroke-linecap="round" fill="none" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">No data available</h3>
+                        <p class="text-gray-500 dark:text-gray-400">Complete tasks to see your analytics.</p>
+                    </div>
+                </section>
+
+                <!-- ==================== VIEW 3: TASKS ==================== -->
+                <section id="view-tasks" class="view-section px-6 lg:px-10 py-6 hidden">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">All Tasks</h2>
+                        <button
+                            class="px-4 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 text-sm font-medium rounded-full transition-colors flex items-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            New Task
+                        </button>
+                    </div>
+
+                    <!-- Task List Container (Populated by JS) -->
+                    <div id="task-list-container" class="space-y-4">
+                        <!-- Empty State displayed by default -->
+                        <div
+                            class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-10 text-center">
+                            <p class="text-gray-500 dark:text-gray-400">Your task list is empty.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ==================== VIEW 4: TRACKING ==================== -->
+                <section id="view-tracking" class="view-section px-6 lg:px-10 py-6 hidden">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Time Tracking</h2>
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-10 text-center">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Ready to focus?</h3>
+                        <button
+                            class="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full font-semibold transition-all">
+                            <i data-lucide="play" class="w-5 h-5"></i>
+                            Start Timer
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ==================== VIEW 5: SETTINGS ==================== -->
+                <section id="view-settings" class="view-section px-6 lg:px-10 py-6 hidden">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Settings</h2>
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Display
+                                Name</label>
+                            <input type="text" placeholder="Enter your name"
+                                class="w-full px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400">
+                        </div>
+                        <div
+                            class="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                            <span class="font-medium text-gray-900 dark:text-white">Dark Mode</span>
+                            <button
+                                class="text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white underline">Toggle
+                                Theme</button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- ==================== RIGHT SIDEBAR (Stats) ==================== -->
+            <aside
+                class="hidden lg:block sticky top-0 h-screen w-[28rem] xl:w-96 bg-white dark:bg-gray-900 overflow-hi p-6 space-y-6 z-10">
+                <!-- Search -->
+                <div class="flex items-center justify-between">
+                    <button
+                        class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-600 dark:text-gray-400"></i>
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <i data-lucide="bell" class="w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                        <div
+                            class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Panel Empty State -->
+                <div class="flex items-center justify-between gap-4">
+                    <div class="bg-gray-50 dark:bg-gray-800 w-full rounded-2xl p-6 text-center">
+                        <p class="text-lg font-bold text-gray-900 dark:text-white mb-1">0 Tasks</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Completed yet</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-800 w-full rounded-2xl p-6 text-center">
+                        <p class="text-lg font-bold text-gray-900 dark:text-white mb-1">0 Projects</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Completed yet</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 dark:bg-gray-800 rounded-2xl p-6 text-center text-white">
+                    <p class="font-bold mb-2">Go Premium</p>
+                    <p class="text-sm text-gray-400 mb-4">Unlock all features</p>
+                    <button
+                        class="w-full py-2 bg-white text-gray-900 font-medium rounded-full text-sm hover:bg-gray-100">Upgrade</button>
+                </div>
+            </aside>
+
+        </main>
+    </div>
+
+    <!-- ==================== MODAL: CREATE TASK ==================== -->
+    <div id="create-task-modal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Content -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-4">
+            <div
+                class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Create New Task</h3>
+                    <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                        <i data-lucide="x" class="w-5 h-5 text-gray-400"></i>
+                    </button>
+                </div>
+                <!-- Form -->
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Task
+                            Name</label>
+                        <input type="text" id="new-task-title" placeholder="What needs to be done?"
+                            class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white transition-all">
+                    </div>
+                </div>
+                <div
+                    class="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
+                    <button
+                        class="px-4 py-2 text-gray-600 dark:text-gray-400 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                        Cancel
+                    </button>
+                    <button
+                        class="px-5 py-2 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 font-medium text-sm rounded-full transition-all">
+                        Create Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 </body>
+
 </html>

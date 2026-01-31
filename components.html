@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - UI Component Library</title>
+    <meta name="description" content="Reusable UI components for the TaskFlow application">
+
+    <!-- Tailwind CSS -->
+    <link href="./assets/src/output.css" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Custom focus ring */
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Transitions for Dark Mode */
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans min-h-screen p-6 md:p-10 transition-colors duration-200">
+
+    <!-- ==================== HEADER ==================== -->
+    <header class="max-w-6xl mx-auto mb-12 flex justify-between items-start">
+        <div>
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl font-black text-gray-900 dark:text-white">F<span
+                        class="text-gray-900 dark:text-gray-400">.</span></span>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">TaskFlow UI Kit</h1>
+                    <p class="text-gray-500 dark:text-gray-400">Reusable component library</p>
+                </div>
+            </div>
+            <p class="text-gray-600 dark:text-gray-400 max-w-2xl">
+                A comprehensive collection of UI components built with Tailwind CSS. Toggle dark mode to test components
+                in both themes.
+            </p>
+        </div>
+
+        <button onclick="toggleTheme()"
+            class="p-3 bg-white dark:bg-gray-800 rounded-full shadow-sm hover:shadow-md transition-all border border-gray-200 dark:border-gray-700">
+            <i data-lucide="moon" class="w-6 h-6 text-gray-600 dark:text-gray-400 dark:hidden"></i>
+            <i data-lucide="sun" class="w-6 h-6 text-gray-600 dark:text-gray-400 hidden dark:block"></i>
+        </button>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-16">
+
+        <!-- ==================== SECTION: BUTTONS ==================== -->
+        <section id="buttons">
+            <h2
+                class="text-xl font-bold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-800">
+                Buttons
+            </h2>
+
+            <div class="space-y-8">
+                <!-- Primary Buttons -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                        Primary</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <!-- Default -->
+                        <button
+                            class="px-5 py-2.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full font-medium text-sm transition-all focus-ring">
+                            Primary Button
+                        </button>
+                        <!-- With icon -->
+                        <button
+                            class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full font-medium text-sm transition-all focus-ring">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            With Icon
+                        </button>
+                        <!-- Large -->
+                        <button
+                            class="px-6 py-3 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-200 text-white dark:text-gray-900 rounded-full font-semibold transition-all focus-ring">
+                            Large Button
+                        </button>
+                        <!-- Disabled -->
+                        <button disabled
+                            class="px-5 py-2.5 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 rounded-full font-medium text-sm cursor-not-allowed">
+                            Disabled
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Secondary Buttons -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                        Secondary</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <!-- Outlined -->
+                        <button
+                            class="px-5 py-2.5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 rounded-full font-medium text-sm transition-all focus-ring">
+                            Secondary
+                        </button>
+                        <!-- With icon -->
+                        <button
+                            class="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900 rounded-full font-medium text-sm transition-all focus-ring">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            Download
+                        </button>
+                        <!-- Light variant -->
+                        <button
+                            class="px-5 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full font-medium text-sm transition-all focus-ring">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ghost Buttons -->
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
+                        Ghost / Text</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <button
+                            class="px-4 py-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full font-medium text-sm transition-all focus-ring">
+                            Ghost Button
+                        </button>
+                        <button
+                            class="inline-flex items-center gap-2 px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full font-medium text-sm transition-all focus-ring">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                            Settings
+                        </button>
+                        <button
+                            class="text-gray-900 dark:text-white hover:text-gray-600 dark:hover:text-gray-300 font-medium text-sm underline underline-offset-2">
+                            Link Style
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: FORM ELEMENTS ==================== -->
+        <section id="forms">
+            <h2
+                class="text-xl font-bold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-800">
+                Form Elements
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Text Inputs -->
+                <div class="space-y-6">
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Text
+                        Inputs</h3>
+
+                    <!-- Default input -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Default
+                            Input</label>
+                        <input type="text" placeholder="Enter text..."
+                            class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-all placeholder-gray-400 dark:placeholder-gray-600">
+                    </div>
+
+                    <!-- With icon -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">With
+                            Icon</label>
+                        <div class="relative">
+                            <i data-lucide="mail"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500"></i>
+                            <input type="email" placeholder="email@example.com"
+                                class="w-full pl-11 pr-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-all placeholder-gray-400 dark:placeholder-gray-600">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other Form Elements -->
+                <div class="space-y-6">
+                    <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Other
+                        Elements</h3>
+
+                    <!-- Textarea -->
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Textarea</label>
+                        <textarea rows="3" placeholder="Enter description..."
+                            class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 transition-all resize-none placeholder-gray-400 dark:placeholder-gray-600"></textarea>
+                    </div>
+
+                    <!-- Toggle Switches -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Toggle
+                            Switches</label>
+                        <div class="space-y-3">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-200 dark:bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gray-900 dark:peer-checked:bg-white">
+                                </div>
+                                <span class="ml-3 text-gray-700 dark:text-gray-300">Active toggle</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: CARDS ==================== -->
+        <section id="cards">
+            <h2
+                class="text-xl font-bold text-gray-900 dark:text-white mb-6 pb-2 border-b border-gray-200 dark:border-gray-800">
+                Task Cards
+            </h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Basic Task Card -->
+                <article
+                    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600 transition-all cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                            F
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Learn Figma</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">by Christopher Morgan</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                            <span>6h 30min</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Completed Card -->
+                <article
+                    class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 opacity-75">
+                    <div class="flex items-start justify-between mb-3">
+                        <span
+                            class="px-2.5 py-1 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs font-semibold rounded-full">Done</span>
+                        <div class="w-6 h-6 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center">
+                            <i data-lucide="check" class="w-4 h-4 text-white dark:text-gray-900"></i>
+                        </div>
+                    </div>
+                    <h3 class="font-semibold text-gray-400 dark:text-gray-500 mb-1 line-through">Setup project</h3>
+                    <p class="text-sm text-gray-400 dark:text-gray-500 mb-4">Initialize the repository</p>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="max-w-6xl mx-auto mt-16 py-8 border-t border-gray-200 dark:border-gray-800 text-center text-gray-500 dark:text-gray-400 text-sm">
+        <p>TaskFlow UI Kit • Built with Tailwind CSS</p>
+    </footer>
+
+    <!-- Initialize Lucide Icons & Theme Logic -->
+    <script>
+        lucide.createIcons();
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Init theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
+</body>
+
+</html>
