@@ -356,6 +356,21 @@
                                 <canvas id="chart-priority"></canvas>
                             </div>
                         </div>
+
+                        <!-- Projects List -->
+                        <div class="bg-themed-card rounded-2xl border border-border-themed p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-sm font-bold text-text-themed-secondary uppercase tracking-wider">
+                                    Projects</h3>
+                                <button
+                                    class="create-task-trigger text-xs text-accent-primary hover:underline font-medium"
+                                    onclick="document.getElementById('create-project-dialog')?.showModal()">+ New
+                                    Project</button>
+                            </div>
+                            <div id="analytics-projects-list" class="space-y-3">
+                                <p class="text-sm text-text-themed-muted text-center py-4">No projects yet.</p>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -451,7 +466,6 @@
                     <h2 class="text-xl font-bold text-text-themed mb-6">Settings</h2>
 
                     <div class="space-y-6">
-                        <!-- Profile Section -->
                         <div
                             class="flex flex-col items-center lg:items-start justify-center lg:justify-start bg-themed-card rounded-2xl border border-border-themed p-6">
                             <h3 class="text-lg font-semibold text-text-themed mb-4">Profile Information</h3>
@@ -459,9 +473,34 @@
                                 class="user-avatar-initial w-16 h-16 rounded-full bg-accent-primary flex items-center justify-center text-2xl font-bold text-white mb-6">
                                 U
                             </div>
-                            <div class="space-y-2 text-center sm:text-left">
-                                <p id="settings-user-name" class="text-lg font-semibold text-text-themed">Loading...</p>
-                                <p id="settings-user-email" class="text-sm text-text-themed-secondary">Loading...</p>
+                            <div class="space-y-3 w-full max-w-sm">
+                                <!-- Display Name (editable) -->
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-text-themed-secondary uppercase tracking-wider mb-1">Display
+                                        Name</label>
+                                    <div id="name-display-row" class="flex items-center gap-2">
+                                        <p id="settings-user-name" class="text-lg font-semibold text-text-themed">
+                                            Loading...</p>
+                                        <button id="edit-name-btn"
+                                            class="text-xs text-accent-primary hover:underline font-medium">Edit</button>
+                                    </div>
+                                    <div id="name-edit-row" class="hidden flex items-center gap-2 mt-1">
+                                        <input id="name-edit-input" type="text" placeholder="Your name"
+                                            class="flex-1 px-3 py-2 bg-themed-input border border-border-themed rounded-xl text-text-themed text-sm focus:outline-none focus:ring-2 focus:ring-accent-primary">
+                                        <button id="save-name-btn"
+                                            class="px-4 py-2 bg-accent-primary hover:bg-accent-primary-hover text-text-themed-inverse text-xs font-bold rounded-full transition-colors">Save</button>
+                                        <button id="cancel-name-btn"
+                                            class="px-3 py-2 text-text-themed-muted text-xs font-medium hover:text-text-themed transition-colors">Cancel</button>
+                                    </div>
+                                </div>
+                                <!-- Email (read-only) -->
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold text-text-themed-secondary uppercase tracking-wider mb-1">Email</label>
+                                    <p id="settings-user-email" class="text-sm text-text-themed-secondary">Loading...
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -521,44 +560,107 @@
 
             </div>
 
-            <!-- ==================== RIGHT SIDEBAR (Stats) ==================== -->
             <aside id="right-sidebar"
-                class="hidden lg:block sticky top-0 h-screen w-[28rem] xl:w-96 bg-themed-card overflow-hi p-6 space-y-6 z-10">
-                <!-- Search -->
-                <div class="flex items-center justify-between">
-                    <button
-                        class="w-10 h-10 rounded-full bg-themed-card-alt flex items-center justify-center hover:bg-themed-panel transition-colors">
-                        <i data-lucide="search" class="w-5 h-5 text-text-themed-secondary"></i>
-                    </button>
+                class="hidden lg:block sticky top-0 h-screen w-[28rem] xl:w-96 bg-themed-card overflow-y-auto scrollbar-hide p-6 space-y-6 z-10">
+
+                <!-- Top Bar: Search + Icons -->
+                <div class="flex items-center justify-between gap-3">
+                    <!-- Search -->
+                    <div id="sidebar-search-wrapper" class="relative flex-1">
+                        <div class="flex items-center gap-2 bg-themed-card-alt rounded-xl px-3 py-2">
+                            <i data-lucide="search" class="w-4 h-4 text-text-themed-muted"></i>
+                            <input id="sidebar-search-input" type="text" placeholder="Search tasks..."
+                                class="bg-transparent w-full text-sm text-text-themed placeholder:text-text-themed-muted focus:outline-none">
+                        </div>
+                        <div id="sidebar-search-results"
+                            class="hidden absolute left-0 right-0 top-full mt-2 bg-themed-card border border-border-themed rounded-2xl shadow-xl z-50 max-h-64 overflow-y-auto">
+                        </div>
+                    </div>
+
+                    <!-- Notification + Profile -->
                     <div class="flex items-center gap-2">
-                        <div
-                            class="w-10 h-10 rounded-full bg-themed-card-alt flex items-center justify-center hover:bg-themed-panel transition-colors">
-                            <i data-lucide="bell" class="w-5 h-5 text-text-themed-secondary"></i>
+                        <!-- Notification Bell -->
+                        <div class="relative">
+                            <button id="notification-btn"
+                                class="w-10 h-10 rounded-full bg-themed-card-alt flex items-center justify-center hover:bg-themed-panel transition-colors relative">
+                                <i data-lucide="bell" class="w-5 h-5 text-text-themed-secondary"></i>
+                                <span id="notification-badge"
+                                    class="hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 rounded-full text-white text-[10px] font-bold flex items-center justify-center">0</span>
+                            </button>
+                            <!-- Notification Dropdown -->
+                            <div id="notification-dropdown"
+                                class="hidden absolute right-0 top-full mt-2 w-80 bg-themed-card border border-border-themed rounded-2xl shadow-xl z-50 overflow-hidden transition-all">
+                                <div class="px-4 py-3 border-b border-border-themed flex items-center justify-between">
+                                    <h4 class="text-sm font-bold text-text-themed">Notifications</h4>
+                                    <button id="mark-all-read-btn"
+                                        class="hidden text-xs text-accent-primary hover:underline font-medium">Mark all
+                                        read</button>
+                                </div>
+                                <div id="notification-list"
+                                    class="max-h-48 overflow-y-auto p-2 space-y-1 transition-all">
+                                    <p class="text-sm text-text-themed-muted text-center py-6">No notifications</p>
+                                </div>
+                                <div id="notification-footer"
+                                    class="hidden border-t border-border-themed px-4 py-2 text-center">
+                                    <button id="see-all-notifications-btn"
+                                        class="text-xs text-accent-primary hover:underline font-medium">See all
+                                        notifications</button>
+                                </div>
+                            </div>
                         </div>
-                        <div
-                            class="w-10 h-10 rounded-full bg-themed-card-alt flex items-center justify-center hover:bg-themed-panel transition-colors">
-                            <i data-lucide="user" class="w-5 h-5 text-text-themed-secondary"></i>
+
+                        <!-- Profile -->
+                        <div class="relative">
+                            <button id="profile-btn"
+                                class="user-avatar-initial w-10 h-10 rounded-full bg-accent-primary flex items-center justify-center text-sm font-bold text-white hover:opacity-90 transition-opacity">
+                                U
+                            </button>
+                            <!-- Profile Dropdown -->
+                            <div id="profile-dropdown"
+                                class="hidden absolute right-0 top-full mt-2 w-56 bg-themed-card border border-border-themed rounded-2xl shadow-xl z-50 overflow-hidden">
+                                <div class="px-4 py-3 border-b border-border-themed">
+                                    <p id="dropdown-user-name" class="text-sm font-bold text-text-themed truncate">User
+                                    </p>
+                                    <p id="dropdown-user-email" class="text-xs text-text-themed-muted truncate">
+                                        user@email.com</p>
+                                </div>
+                                <div class="p-2">
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm text-text-themed hover:bg-themed-card-alt rounded-xl transition-colors flex items-center gap-2"
+                                        onclick="document.querySelector('[data-link=\'view-settings\']')?.click(); document.getElementById('profile-dropdown').classList.add('hidden')">
+                                        <i data-lucide="settings" class="w-4 h-4"></i> Settings
+                                    </button>
+                                    <button data-action="logout"
+                                        class="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors flex items-center gap-2">
+                                        <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Panel Empty State -->
+                <!-- Stats Counters (clickable → Analytics) -->
                 <div class="flex items-center justify-between gap-4">
-                    <div class="bg-themed-card-alt w-full rounded-2xl p-6 text-center">
+                    <button onclick="document.querySelector('[data-link=\'view-analytics\']')?.click()"
+                        class="bg-themed-card-alt w-full rounded-2xl p-6 text-center hover:ring-2 hover:ring-accent-primary/30 transition-all cursor-pointer">
                         <p id="sidebar-tasks-count" class="text-lg font-bold text-text-themed mb-1">0 Tasks</p>
-                        <p class="text-sm text-text-themed-secondary">Completed yet</p>
-                    </div>
-                    <div class="bg-themed-card-alt w-full rounded-2xl p-6 text-center">
+                        <p class="text-sm text-text-themed-secondary">Completed</p>
+                    </button>
+                    <button onclick="document.querySelector('[data-link=\'view-analytics\']')?.click()"
+                        class="bg-themed-card-alt w-full rounded-2xl p-6 text-center hover:ring-2 hover:ring-accent-primary/30 transition-all cursor-pointer">
                         <p id="sidebar-projects-count" class="text-lg font-bold text-text-themed mb-1">0 Projects</p>
-                        <p class="text-sm text-text-themed-secondary">Completed yet</p>
-                    </div>
+                        <p class="text-sm text-text-themed-secondary">Active</p>
+                    </button>
                 </div>
 
-                <div class="bg-themed-card-alt rounded-2xl p-6 text-center text-text-themed">
-                    <p class="font-bold mb-2">Go Premium</p>
-                    <p class="text-sm text-text-themed-secondary mb-4">Unlock all features</p>
-                    <button
-                        class="w-full py-2 bg-accent-primary text-text-themed-inverse font-medium rounded-full text-sm hover:bg-accent-primary-hover">Upgrade</button>
+                <!-- Upcoming Tasks -->
+                <div>
+                    <h3 class="text-sm font-bold text-text-themed-secondary uppercase tracking-wider mb-3">Upcoming
+                        Tasks</h3>
+                    <div id="sidebar-upcoming-tasks" class="space-y-2">
+                        <p class="text-sm text-text-themed-muted text-center py-6">No upcoming tasks.</p>
+                    </div>
                 </div>
             </aside>
 

@@ -1,8 +1,4 @@
-// ==========================================================================
-// ANALYTICS RENDERER — Chart.js Powered Analytics
-// ==========================================================================
-
-import { getStats, getWeeklyData, getPriorityDistribution, getAllTasks } from '../data/taskManager.js'
+import { getStats, getWeeklyData, getPriorityDistribution, getAllTasks, getAllProjects, getTasksByProject } from '../data/taskManager.js'
 
 let completionChart = null
 let weeklyChart = null
@@ -26,7 +22,6 @@ function getChartColors() {
     }
 }
 
-// --- Default chart options ---
 function defaultOptions(title = '') {
     const c = getChartColors()
     return {
@@ -50,30 +45,16 @@ function buildCompletionChart() {
     if (!ctx) return
     const stats = getStats()
     const c = getChartColors()
-
     if (completionChart) completionChart.destroy()
-
     completionChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Completed', 'Pending'],
-            datasets: [{
-                data: [stats.completed, stats.pending],
-                backgroundColor: [c.green, c.gray],
-                borderWidth: 0,
-                hoverOffset: 8,
-            }]
+            datasets: [{ data: [stats.completed, stats.pending], backgroundColor: [c.green, c.gray], borderWidth: 0, hoverOffset: 8 }]
         },
         options: {
-            ...defaultOptions(),
-            cutout: '70%',
-            plugins: {
-                ...defaultOptions().plugins,
-                legend: {
-                    position: 'bottom',
-                    labels: { color: c.text, padding: 16, usePointStyle: true, font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 } }
-                }
-            }
+            ...defaultOptions(), cutout: '70%',
+            plugins: { ...defaultOptions().plugins, legend: { position: 'bottom', labels: { color: c.text, padding: 16, usePointStyle: true, font: { family: "'Plus Jakarta Sans', sans-serif", size: 12 } } } }
         }
     })
 }
@@ -83,53 +64,23 @@ function buildWeeklyChart() {
     if (!ctx) return
     const weekData = getWeeklyData()
     const c = getChartColors()
-
     if (weeklyChart) weeklyChart.destroy()
-
     weeklyChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: weekData.map(d => d.label),
             datasets: [
-                {
-                    label: 'Created',
-                    data: weekData.map(d => d.created),
-                    backgroundColor: c.blueBg,
-                    borderColor: c.blue,
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                },
-                {
-                    label: 'Completed',
-                    data: weekData.map(d => d.completed),
-                    backgroundColor: c.greenBg,
-                    borderColor: c.green,
-                    borderWidth: 1.5,
-                    borderRadius: 6,
-                }
+                { label: 'Created', data: weekData.map(d => d.created), backgroundColor: c.blueBg, borderColor: c.blue, borderWidth: 1.5, borderRadius: 6 },
+                { label: 'Completed', data: weekData.map(d => d.completed), backgroundColor: c.greenBg, borderColor: c.green, borderWidth: 1.5, borderRadius: 6 }
             ]
         },
         options: {
             ...defaultOptions(),
             scales: {
-                x: {
-                    ticks: { color: c.text, font: { family: "'Plus Jakarta Sans', sans-serif" } },
-                    grid: { display: false },
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: { color: c.text, stepSize: 1, font: { family: "'Plus Jakarta Sans', sans-serif" } },
-                    grid: { color: c.grid },
-                }
+                x: { ticks: { color: c.text, font: { family: "'Plus Jakarta Sans', sans-serif" } }, grid: { display: false } },
+                y: { beginAtZero: true, ticks: { color: c.text, stepSize: 1, font: { family: "'Plus Jakarta Sans', sans-serif" } }, grid: { color: c.grid } }
             },
-            plugins: {
-                ...defaultOptions().plugins,
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: { color: c.text, usePointStyle: true, padding: 12, font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 } }
-                }
-            }
+            plugins: { ...defaultOptions().plugins, legend: { position: 'top', align: 'end', labels: { color: c.text, usePointStyle: true, padding: 12, font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 } } } }
         }
     })
 }
@@ -139,9 +90,7 @@ function buildPriorityChart() {
     if (!ctx) return
     const dist = getPriorityDistribution()
     const c = getChartColors()
-
     if (priorityChart) priorityChart.destroy()
-
     priorityChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -149,35 +98,65 @@ function buildPriorityChart() {
             datasets: [{
                 label: 'Tasks',
                 data: [dist.high, dist.medium, dist.low],
-                backgroundColor: [
-                    'rgba(239,68,68,0.2)',
-                    'rgba(234,179,8,0.2)',
-                    'rgba(34,197,94,0.2)',
-                ],
+                backgroundColor: ['rgba(239,68,68,0.2)', 'rgba(234,179,8,0.2)', 'rgba(34,197,94,0.2)'],
                 borderColor: [c.red, c.yellow, c.green],
-                borderWidth: 1.5,
-                borderRadius: 8,
+                borderWidth: 1.5, borderRadius: 8,
             }]
         },
         options: {
-            ...defaultOptions(),
-            indexAxis: 'y',
+            ...defaultOptions(), indexAxis: 'y',
             scales: {
-                x: {
-                    beginAtZero: true,
-                    ticks: { color: c.text, stepSize: 1, font: { family: "'Plus Jakarta Sans', sans-serif" } },
-                    grid: { color: c.grid },
-                },
-                y: {
-                    ticks: { color: c.text, font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } },
-                    grid: { display: false },
-                }
+                x: { beginAtZero: true, ticks: { color: c.text, stepSize: 1, font: { family: "'Plus Jakarta Sans', sans-serif" } }, grid: { color: c.grid } },
+                y: { ticks: { color: c.text, font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }, grid: { display: false } }
             },
-            plugins: {
-                ...defaultOptions().plugins,
-                legend: { display: false }
-            }
+            plugins: { ...defaultOptions().plugins, legend: { display: false } }
         }
+    })
+}
+
+// ==========================================================================
+// PROJECT LIST
+// ==========================================================================
+
+const PROJECT_COLOR_MAP = {
+    blue: 'bg-blue-500', green: 'bg-green-500', purple: 'bg-purple-500',
+    orange: 'bg-orange-500', pink: 'bg-pink-500',
+}
+
+function renderProjectsList() {
+    const container = document.getElementById('analytics-projects-list')
+    if (!container) return
+
+    const projects = getAllProjects()
+    container.innerHTML = ''
+
+    if (projects.length === 0) {
+        container.innerHTML = '<p class="text-sm text-text-themed-muted text-center py-4">No projects yet.</p>'
+        return
+    }
+
+    projects.forEach(project => {
+        const tasks = getTasksByProject(project.id)
+        const completed = tasks.filter(t => t.completed).length
+        const total = tasks.length
+        const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+        const colorClass = PROJECT_COLOR_MAP[project.color] || 'bg-blue-500'
+
+        const el = document.createElement('div')
+        el.className = 'flex items-center gap-4 p-3 bg-themed-card-alt rounded-xl'
+        el.innerHTML = `
+            <span class="w-3 h-3 rounded-full ${colorClass} flex-shrink-0"></span>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                    <p class="text-sm font-semibold text-text-themed truncate">${project.name}</p>
+                    <span class="text-xs text-text-themed-muted ml-2">${completed}/${total}</span>
+                </div>
+                <div class="w-full h-1.5 bg-themed-panel rounded-full overflow-hidden">
+                    <div class="${colorClass} h-full rounded-full transition-all" style="width: ${pct}%"></div>
+                </div>
+            </div>
+        `
+        container.appendChild(el)
     })
 }
 
@@ -202,14 +181,13 @@ export function renderAnalytics() {
     emptyEl.classList.add('hidden')
     contentEl.classList.remove('hidden')
 
-    // Update stat cards
     document.getElementById('analytics-total').textContent = stats.total
     document.getElementById('analytics-completed').textContent = stats.completed
     document.getElementById('analytics-pending').textContent = stats.pending
     document.getElementById('analytics-overdue').textContent = stats.overdue
 
-    // Build charts
     buildCompletionChart()
     buildWeeklyChart()
     buildPriorityChart()
+    renderProjectsList()
 }

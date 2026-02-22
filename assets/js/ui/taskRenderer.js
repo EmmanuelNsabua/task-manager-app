@@ -3,7 +3,7 @@
 // ==========================================================================
 import {
     getAllTasks, toggleComplete, deleteTask,
-    getStats, getAllProjects, getPendingTasks, getCompletedTasks
+    getStats, getAllProjects, getPendingTasks, getCompletedTasks, searchTasks
 } from '../data/taskManager.js'
 import { renderAnalytics } from './analyticsRenderer.js'
 
@@ -39,11 +39,21 @@ function formatDate(dateStr) {
 
 function isOverdue(task) {
     if (task.completed) return false
+    if (!task.date) return false
     const due = new Date(task.date)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     due.setHours(0, 0, 0, 0)
     return due < today
+}
+
+function isToday(dateStr) {
+    if (!dateStr) return false
+    const date = new Date(dateStr)
+    const today = new Date()
+    date.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0)
+    return date.getTime() === today.getTime()
 }
 
 function formatTime(timeStr) {
@@ -63,7 +73,7 @@ function escapeHtml(str) {
 // RENDER A SINGLE TASK CARD
 // ==========================================================================
 
-function createTaskCard(task) {
+function createTaskCard(task, compact = false) {
     const priority = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium
     const projects = getAllProjects()
     const project = projects.find(p => p.id === task.project)
@@ -71,11 +81,11 @@ function createTaskCard(task) {
     const overdue = isOverdue(task)
 
     const card = document.createElement('div')
-    card.className = `task-card group bg-themed-card rounded-2xl border border-border-themed p-5 transition-all hover:shadow-md hover:border-border-themed-focus ${task.completed ? 'opacity-60' : ''}`
+    card.className = `task-card group bg-themed-card rounded-2xl border border-border-themed ${compact ? 'p-3' : 'p-5'} transition-all hover:shadow-md hover:border-border-themed-focus ${task.completed ? 'opacity-60' : ''}`
     card.dataset.taskId = task.id
 
     card.innerHTML = `
-        <div class="flex items-start gap-4">
+        <div class="flex items-start gap-${compact ? '3' : '4'}">
             <button class="task-toggle mt-1 flex-shrink-0 w-5 h-5 rounded-full border-2 ${task.completed
             ? 'bg-accent-primary border-accent-primary'
             : 'border-gray-300 dark:border-gray-600 hover:border-accent-primary'
@@ -84,9 +94,9 @@ function createTaskCard(task) {
             </button>
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
-                    <h4 class="font-semibold text-text-themed ${task.completed ? 'line-through' : ''} truncate">${escapeHtml(task.title)}</h4>
+                    <h4 class="${compact ? 'text-sm' : ''} font-semibold text-text-themed ${task.completed ? 'line-through' : ''} truncate">${escapeHtml(task.title)}</h4>
                 </div>
-                ${task.description ? `<p class="text-sm text-text-themed-secondary mb-2 line-clamp-2">${escapeHtml(task.description)}</p>` : ''}
+                ${!compact && task.description ? `<p class="text-sm text-text-themed-secondary mb-2 line-clamp-2">${escapeHtml(task.description)}</p>` : ''}
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full ${priority.badge}">
                         <span class="w-1.5 h-1.5 rounded-full ${priority.dot}"></span>
@@ -104,7 +114,7 @@ function createTaskCard(task) {
                     </span>` : ''}
                 </div>
             </div>
-            <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center gap-1">
                 <button class="p-1.5 hover:bg-themed-card-alt rounded-lg transition-colors text-text-themed-muted hover:text-text-themed" data-action="edit" title="Edit">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                 </button>
@@ -115,7 +125,7 @@ function createTaskCard(task) {
         </div>
     `
 
-    // --- Event Delegation (async handlers) ---
+    // --- Event Delegation ---
     card.addEventListener('click', async (e) => {
         const btn = e.target.closest('[data-action]')
         if (!btn) return
@@ -167,7 +177,7 @@ function createEmptyState(message = 'No tasks yet', showButton = true) {
 }
 
 // ==========================================================================
-// RENDER SECTIONS
+// RENDER DASHBOARD — TODAY'S TASKS ONLY
 // ==========================================================================
 
 function renderDashboard() {
@@ -180,12 +190,16 @@ function renderDashboard() {
     const emptyState = document.getElementById('dashboard-empty-state')
     const statsGrid = document.getElementById('dashboard-stats-grid')
 
-    // Update user greeting
+    // --- Greeting with first name only ---
     const greeting = section.querySelector('h1')
     const cachedUser = JSON.parse(localStorage.getItem('taskflow_user') || 'null')
     if (greeting && cachedUser?.displayName) {
-        greeting.textContent = `Hello, ${cachedUser.displayName}!`
+        const firstName = cachedUser.displayName.split(' ')[0]
+        greeting.textContent = `Hello, ${firstName}!`
     }
+
+    // --- Filter: today's tasks + overdue ---
+    const todayTasks = allTasks.filter(t => isToday(t.date) || isOverdue(t))
 
     if (allTasks.length === 0) {
         if (emptyState) emptyState.style.display = ''
@@ -195,6 +209,7 @@ function renderDashboard() {
         if (emptyState) emptyState.style.display = 'none'
         if (statsGrid) statsGrid.classList.remove('hidden')
 
+        // Stats
         const statTotal = document.getElementById('stat-total')
         const statCompleted = document.getElementById('stat-completed')
         if (statTotal) statTotal.textContent = stats.total
@@ -206,6 +221,7 @@ function renderDashboard() {
         const prodEl = statsGrid?.querySelectorAll('.text-3xl')?.[3]
         if (prodEl) prodEl.textContent = `${stats.productivity}%`
 
+        // Task container
         if (!container) {
             container = document.createElement('div')
             container.id = 'dashboard-task-container'
@@ -216,20 +232,35 @@ function renderDashboard() {
         }
         container.innerHTML = ''
 
-        const recentTasks = allTasks.slice(0, 5)
-        recentTasks.forEach(task => container.appendChild(createTaskCard(task)))
+        if (todayTasks.length === 0) {
+            const noTodayMsg = document.createElement('div')
+            noTodayMsg.className = 'bg-themed-card rounded-2xl border border-border-themed p-8 text-center'
+            noTodayMsg.innerHTML = `
+                <p class="text-text-themed-secondary">🎉 No tasks for today! Check your full task list.</p>
+                <button class="mt-3 text-sm font-medium text-accent-primary hover:underline" onclick="document.querySelector('[data-link=\\'view-tasks\\']')?.click()">View All Tasks →</button>
+            `
+            container.appendChild(noTodayMsg)
+        } else {
+            // Show max 5 today's tasks on dashboard
+            const visibleTasks = todayTasks.slice(0, 5)
+            visibleTasks.forEach(task => container.appendChild(createTaskCard(task)))
 
-        if (allTasks.length > 5) {
-            const moreLink = document.createElement('button')
-            moreLink.className = 'w-full text-center py-3 text-sm font-medium text-text-themed-secondary hover:text-text-themed transition-colors'
-            moreLink.textContent = `View all ${allTasks.length} tasks →`
-            moreLink.addEventListener('click', () => {
-                document.querySelector('[data-link="view-tasks"]')?.click()
-            })
-            container.appendChild(moreLink)
+            if (todayTasks.length > 5) {
+                const moreLink = document.createElement('button')
+                moreLink.className = 'w-full text-center py-3 text-sm font-medium text-text-themed-secondary hover:text-text-themed transition-colors'
+                moreLink.textContent = `View all ${todayTasks.length} tasks for today →`
+                moreLink.addEventListener('click', () => {
+                    document.querySelector('[data-link="view-tasks"]')?.click()
+                })
+                container.appendChild(moreLink)
+            }
         }
     }
 }
+
+// ==========================================================================
+// RENDER TASK LIST — ALL TASKS
+// ==========================================================================
 
 function renderTaskList() {
     const container = document.getElementById('task-list-container')
@@ -263,13 +294,128 @@ function renderTaskList() {
     }
 }
 
+// ==========================================================================
+// RENDER RIGHT SIDEBAR — UPCOMING TASKS
+// ==========================================================================
+
 function renderRightSidebar() {
+    const sidebar = document.getElementById('right-sidebar')
+    if (!sidebar) return
+
     const stats = getStats()
     const projects = getAllProjects()
+    const allTasks = getAllTasks()
+
+    // Update counters
     const tasksCount = document.getElementById('sidebar-tasks-count')
     const projectsCount = document.getElementById('sidebar-projects-count')
     if (tasksCount) tasksCount.textContent = `${stats.completed} Tasks`
     if (projectsCount) projectsCount.textContent = `${projects.length} Projects`
+
+    // --- Upcoming tasks container ---
+    let upcomingContainer = document.getElementById('sidebar-upcoming-tasks')
+    if (!upcomingContainer) return
+
+    upcomingContainer.innerHTML = ''
+
+    // Get all pending tasks with dates, sorted by date
+    const upcoming = allTasks
+        .filter(t => !t.completed && t.date)
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 8)
+
+    if (upcoming.length === 0) {
+        upcomingContainer.innerHTML = '<p class="text-sm text-text-themed-muted text-center py-6">No upcoming tasks.</p>'
+        return
+    }
+
+    // Group by date
+    const groups = {}
+    upcoming.forEach(t => {
+        const label = formatDate(t.date)
+        if (!groups[label]) groups[label] = []
+        groups[label].push(t)
+    })
+
+    Object.entries(groups).forEach(([dateLabel, tasks]) => {
+        const header = document.createElement('h4')
+        header.className = 'text-xs font-bold text-text-themed-secondary uppercase tracking-wider mb-2 mt-3 first:mt-0'
+        header.textContent = dateLabel
+        upcomingContainer.appendChild(header)
+
+        tasks.forEach(task => upcomingContainer.appendChild(createTaskCard(task, true)))
+    })
+}
+
+// ==========================================================================
+// SEARCH
+// ==========================================================================
+
+export function initSearch() {
+    const searchInput = document.getElementById('sidebar-search-input')
+    const searchResults = document.getElementById('sidebar-search-results')
+    const searchOverlay = document.getElementById('search-overlay')
+
+    if (!searchInput) return
+
+    let debounceTimer = null
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer)
+        debounceTimer = setTimeout(() => {
+            const q = searchInput.value.trim()
+            if (q.length < 2) {
+                if (searchResults) searchResults.classList.add('hidden')
+                return
+            }
+            const results = searchTasks(q)
+            renderSearchResults(results, searchResults)
+        }, 250)
+    })
+
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value.trim().length >= 2) {
+            if (searchResults) searchResults.classList.remove('hidden')
+        }
+    })
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#sidebar-search-wrapper')) {
+            if (searchResults) searchResults.classList.add('hidden')
+        }
+    })
+}
+
+function renderSearchResults(results, container) {
+    if (!container) return
+    container.classList.remove('hidden')
+
+    if (results.length === 0) {
+        container.innerHTML = '<p class="text-sm text-text-themed-muted p-3">No tasks found.</p>'
+        return
+    }
+
+    container.innerHTML = results.slice(0, 5).map(task => {
+        const priority = PRIORITY_CONFIG[task.priority] || PRIORITY_CONFIG.medium
+        return `
+            <div class="p-3 hover:bg-themed-panel rounded-xl transition-colors cursor-pointer search-result-item" data-task-id="${task.id}">
+                <p class="text-sm font-medium text-text-themed truncate ${task.completed ? 'line-through opacity-60' : ''}">${escapeHtml(task.title)}</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="w-1.5 h-1.5 rounded-full ${priority.dot}"></span>
+                    <span class="text-xs text-text-themed-muted">${priority.label}${task.date ? ' · ' + formatDate(task.date) : ''}</span>
+                </div>
+            </div>
+        `
+    }).join('')
+
+    // Click search result → navigate to tasks view
+    container.querySelectorAll('.search-result-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelector('[data-link="view-tasks"]')?.click()
+            container.classList.add('hidden')
+        })
+    })
 }
 
 // ==========================================================================
