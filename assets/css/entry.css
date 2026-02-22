@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+/* Import the CSS compiled from Sass */
+@import "./compiled.css";

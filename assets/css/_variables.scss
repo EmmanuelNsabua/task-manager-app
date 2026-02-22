@@ -1,0 +1,87 @@
+// ==========================================================================
+// THEME VARIABLES - Centralized Color System
+// ==========================================================================
+// This file contains all color definitions for the application.
+// Modify these values to change the entire app's color scheme.
+// ==========================================================================
+
+:root {
+    // ----------------------------------------
+    // BACKGROUNDS
+    // ----------------------------------------
+    --bg-body: #ffffff;
+    --bg-panel: #f9fafb; // gray-50
+    --bg-card: #ffffff;
+    --bg-card-alt: #f3f4f6; // gray-100
+    --bg-sidebar: #000000;
+    --bg-input: #ffffff;
+    --bg-button-hover: #f3f4f6; // gray-100
+    --bg-modal-backdrop: rgba(0, 0, 0, 0.5);
+
+    // ----------------------------------------
+    // TEXT COLORS
+    // ----------------------------------------
+    --text-primary: #111827; // gray-900
+    --text-secondary: #6b7280; // gray-500
+    --text-muted: #9ca3af; // gray-400
+    --text-inverse: #ffffff;
+
+    // ----------------------------------------
+    // BORDERS
+    // ----------------------------------------
+    --border-default: #e5e7eb; // gray-200
+    --border-light: #f3f4f6; // gray-100
+    --border-focus: #111827; // gray-900
+
+    // ----------------------------------------
+    // ACCENT / INTERACTIVE
+    // ----------------------------------------
+    --accent-primary: #121213; // gray-900 (buttons)
+    --accent-primary-hover: #2d2d2d; // gray-800
+    --accent-danger: #dc2626; // red-600
+    --accent-danger-hover: rgba(220, 38, 38, 0.1);
+
+    // ----------------------------------------
+    // SHADOWS
+    // ----------------------------------------
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+// ==========================================================================
+// DARK THEME OVERRIDES
+// ==========================================================================
+.dark {
+    // ----------------------------------------
+    // BACKGROUNDS
+    // ----------------------------------------
+    --bg-body: rgb(25, 25, 25);
+    --bg-panel: #0e0e0e;
+    --bg-card: #111111;
+    --bg-card-alt: #171818; // gray-900
+    --bg-sidebar: #000000;
+    --bg-input: #161515; // gray-800
+    --bg-button-hover: #323232; // gray-800
+
+    // ----------------------------------------
+    // TEXT COLORS
+    // ----------------------------------------
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af; // gray-400
+    --text-muted: #6b7280; // gray-500
+    --text-inverse: #111827; // gray-900
+
+    // ----------------------------------------
+    // BORDERS
+    // ----------------------------------------
+    --border-default: rgba(255, 255, 255, 0.1);
+    --border-light: rgba(255, 255, 255, 0.05);
+    --border-focus: #ffffff;
+
+    // ----------------------------------------
+    // ACCENT / INTERACTIVE
+    // ----------------------------------------
+    --accent-primary: #ffffff;
+    --accent-primary-hover: #dbdbdb; // gray-200
+}

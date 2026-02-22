@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to TaskFlow</title>
+    <meta name="description" content="A modern task management application">
+
+    <!-- Tailwind CSS -->
+    <link href="./assets/src/output.css" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        * {
+            transition-property: background-color, border-color, color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 200ms;
+        }
+
+        .error-shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-8px);
+            }
+
+            75% {
+                transform: translateX(8px);
+            }
+        }
+
+        .spinner {
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="grid grid-cols-2 h-screen overflow-hidden">
+        <!-- ==================== LEFT SECTION ==================== -->
+        <div class="hidden md:flex flex-col justify-between items-center bg-[#FDFDFD] p-12 h-full relative">
+            <!-- Logo -->
+            <div class="absolute top-8 left-8 flex items-center gap-3 select-none">
+                <div class="grid grid-cols-3 gap-1 w-6 h-6 rotate-45">
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                    <div class="bg-teal-600 rounded-full w-1.5 h-1.5 opacity-80"></div>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 tracking-tight">TaskFlow</h1>
+            </div>
+
+            <!-- Illustration -->
+            <div class="flex-1 flex items-center justify-center w-96 max-w-full mt-10">
+                <img src="./assets/images/login.png" alt="Illustration"
+                    class="w-full h-auto object-contain drop-shadow-sm mix-blend-multiply">
+            </div>
+
+            <!-- Tagline -->
+            <div class="mb-12 text-center space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-700 leading-tight">Task management just got easier
+                </h2>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-700 leading-tight">for your team!</h2>
+            </div>
+        </div>
+
+        <!-- ==================== RIGHT SECTION ==================== -->
+        <section
+            class="flex flex-col col-span-2 md:col-span-1 justify-center items-center w-full h-full bg-white relative">
+            <div class="flex flex-col justify-center w-full max-w-md px-8 py-10 gap-6">
+
+                <!-- Error Message Banner -->
+                <div id="auth-error"
+                    class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm font-medium">
+                </div>
+
+                <!-- LOGIN VIEW -->
+                <div id="login-view" class="flex flex-col gap-6 transition-opacity duration-300">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-2">Log In</h2>
+                    <form id="login-form" class="flex flex-col gap-4 w-full" novalidate>
+                        <div class="space-y-1">
+                            <label for="login-email" class="sr-only">Email</label>
+                            <input type="email" id="login-email" placeholder="Email address" required
+                                class="p-3 border border-gray-200 rounded-md w-full focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-sm">
+                            <p class="text-red-500 text-xs mt-1 hidden" data-error="login-email">Please enter a valid
+                                email address.</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label for="login-password" class="sr-only">Password</label>
+                            <div class="relative">
+                                <input type="password" id="login-password" placeholder="Password" required minlength="6"
+                                    class="p-3 border border-gray-200 rounded-md w-full focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-sm pr-10">
+                                <button type="button"
+                                    class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <p class="text-red-500 text-xs mt-1 hidden" data-error="login-password">Password must be at
+                                least 6 characters.</p>
+                        </div>
+                        <div class="flex items-center justify-between text-sm mt-2">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" id="remember"
+                                    class="w-4 h-4 text-teal-600 border-gray-300 rounded focus:ring-teal-500 cursor-pointer">
+                                <label for="remember" class="text-gray-400 select-none cursor-pointer">Keep me signed
+                                    in</label>
+                            </div>
+                            <a href="#" class="text-teal-600 font-medium hover:underline">Forgot password?</a>
+                        </div>
+                        <button type="submit" id="login-submit"
+                            class="mt-4 p-3 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/10 flex items-center justify-center gap-2">
+                            <span>Log In</span>
+                            <svg class="spinner w-4 h-4 hidden" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="text-center text-sm text-gray-500">
+                        Don't have an account? <a href="#" id="show-signup"
+                            class="text-teal-600 font-medium hover:underline">Sign Up</a>
+                    </div>
+                </div>
+
+                <!-- SIGN UP VIEW -->
+                <div id="signup-view" class="hidden flex-col gap-6 transition-opacity duration-300">
+                    <h2 class="text-3xl font-bold text-teal-700 mb-2">Create Account</h2>
+                    <form id="signup-form" class="flex flex-col gap-4 w-full" novalidate>
+                        <div class="space-y-1">
+                            <label for="fullname" class="sr-only">Full Name</label>
+                            <input type="text" id="fullname" placeholder="Full Name" required minlength="2"
+                                class="p-3 border border-gray-200 rounded-md w-full focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-sm">
+                            <p class="text-red-500 text-xs mt-1 hidden" data-error="fullname">Please enter your full
+                                name.</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label for="signup-email" class="sr-only">Email</label>
+                            <input type="email" id="signup-email" placeholder="Email Address" required
+                                class="p-3 border border-gray-200 rounded-md w-full focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-sm">
+                            <p class="text-red-500 text-xs mt-1 hidden" data-error="signup-email">Please enter a valid
+                                email address.</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label for="signup-password" class="sr-only">Password</label>
+                            <div class="relative">
+                                <input type="password" id="signup-password" placeholder="Password (min 6 characters)"
+                                    required minlength="6"
+                                    class="p-3 border border-gray-200 rounded-md w-full focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all text-sm pr-10">
+                                <button type="button"
+                                    class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <p class="text-red-500 text-xs mt-1 hidden" data-error="signup-password">Password must be at
+                                least 6 characters.</p>
+                        </div>
+
+                        <button type="submit" id="signup-submit"
+                            class="mt-4 p-3 bg-gray-900 text-white font-medium rounded-md hover:bg-gray-800 transition-colors shadow-lg shadow-gray-900/10 flex items-center justify-center gap-2">
+                            <span>Sign Up</span>
+                            <svg class="spinner w-4 h-4 hidden" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="text-center text-sm text-gray-500">
+                        Already have an account? <a href="#" id="show-login"
+                            class="text-teal-600 font-medium hover:underline">Log In</a>
+                    </div>
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="relative flex items-center justify-center my-2">
+                    <div class="flex-grow border-t border-gray-200"></div>
+                    <span class="flex-shrink-0 px-4 text-gray-400 text-sm">or</span>
+                    <div class="flex-grow border-t border-gray-200"></div>
+                </div>
+
+                <!-- GOOGLE SIGN IN -->
+                <button type="button" id="google-signin-btn"
+                    class="flex items-center justify-center gap-3 p-3 bg-white border border-gray-200 rounded-full text-gray-600 font-medium hover:bg-gray-50 transition-colors shadow-sm">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M23.52 12.29C23.52 11.43 23.47 10.51 23.3 9.64H12V14.26H18.47C18.18 15.67 17.32 16.92 16.03 17.76V20.69H19.96C22.25 18.59 23.52 15.51 23.52 12.29Z"
+                            fill="#4285F4" />
+                        <path
+                            d="M12 24C15.24 24 17.96 22.93 19.96 20.69L16.03 17.76C14.96 18.5 13.56 18.93 12 18.93C8.85 18.93 6.16 16.8 5.2 14.04H1.15V17.14C3.21 21.2 7.37 24 12 24Z"
+                            fill="#34A853" />
+                        <path
+                            d="M5.2 14.04C4.96 13.25 4.81 12.43 4.81 11.59C4.81 10.74 4.96 9.92 5.2 9.13V6.03H1.15C0.42 7.42 0 8.97 0 11.59C0 14.19 0.42 15.82 1.15 17.14L5.2 14.04Z"
+                            fill="#FBBC05" />
+                        <path
+                            d="M12 4.24C13.77 4.24 15.35 4.85 16.6 6.04L19.99 2.65C17.96 0.77 15.24 0 12 0C7.37 0 3.21 2.8 1.15 6.86L5.2 9.96C6.16 7.2 8.85 4.24 12 4.24Z"
+                            fill="#EA4335" />
+                    </svg>
+                    <span class="text-sm">Continue with Google</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>lucide.createIcons()</script>
+    <script type="module">
+        import { signUp, logIn, googleSignIn, onAuthChange } from './assets/js/firebase/authService.js'
+
+        // --- Elements ---
+        const loginView = document.getElementById('login-view')
+        const signupView = document.getElementById('signup-view')
+        const loginForm = document.getElementById('login-form')
+        const signupForm = document.getElementById('signup-form')
+        const googleBtn = document.getElementById('google-signin-btn')
+        const authError = document.getElementById('auth-error')
+
+        // --- Auth State: redirect if already logged in ---
+        onAuthChange((user) => {
+            if (user) window.location.href = 'index.html'
+        })
+
+        // --- Toggle Views ---
+        document.getElementById('show-signup')?.addEventListener('click', (e) => {
+            e.preventDefault()
+            hideError()
+            loginView.classList.add('hidden')
+            loginView.classList.remove('flex')
+            signupView.classList.remove('hidden')
+            signupView.classList.add('flex')
+        })
+
+        document.getElementById('show-login')?.addEventListener('click', (e) => {
+            e.preventDefault()
+            hideError()
+            signupView.classList.add('hidden')
+            signupView.classList.remove('flex')
+            loginView.classList.remove('hidden')
+            loginView.classList.add('flex')
+        })
+
+        // --- Password Toggles ---
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.closest('.relative').querySelector('input')
+                const isPassword = input.type === 'password'
+                input.type = isPassword ? 'text' : 'password'
+                const icon = btn.querySelector('i')
+                if (icon) {
+                    icon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye')
+                    lucide.createIcons()
+                }
+            })
+        })
+
+        // --- Helpers ---
+        function showError(msg) {
+            authError.textContent = msg
+            authError.classList.remove('hidden')
+            authError.classList.add('error-shake')
+            setTimeout(() => authError.classList.remove('error-shake'), 400)
+        }
+
+        function hideError() {
+            authError.classList.add('hidden')
+        }
+
+        function setLoading(btn, loading) {
+            const text = btn.querySelector('span')
+            const spinner = btn.querySelector('.spinner')
+            if (loading) {
+                btn.disabled = true
+                btn.classList.add('opacity-70')
+                if (text) text.textContent = 'Please wait...'
+                if (spinner) spinner.classList.remove('hidden')
+            } else {
+                btn.disabled = false
+                btn.classList.remove('opacity-70')
+                if (spinner) spinner.classList.add('hidden')
+            }
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        }
+
+        function showFieldError(fieldId) {
+            const errEl = document.querySelector(`[data-error="${fieldId}"]`)
+            if (errEl) errEl.classList.remove('hidden')
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('[data-error]').forEach(e => e.classList.add('hidden'))
+        }
+
+        function getFirebaseErrorMessage(code) {
+            const messages = {
+                'auth/email-already-in-use': 'This email is already registered. Try logging in.',
+                'auth/invalid-email': 'Invalid email address.',
+                'auth/weak-password': 'Password is too weak. Use at least 6 characters.',
+                'auth/user-not-found': 'No account found with this email.',
+                'auth/wrong-password': 'Incorrect password. Please try again.',
+                'auth/invalid-credential': 'Invalid email or password.',
+                'auth/too-many-requests': 'Too many attempts. Please try again later.',
+                'auth/popup-closed-by-user': 'Google sign-in was cancelled.',
+                'auth/network-request-failed': 'Network error. Check your connection.',
+            }
+            return messages[code] || 'An error occurred. Please try again.'
+        }
+
+        // --- Login ---
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            hideError()
+            clearFieldErrors()
+
+            const email = document.getElementById('login-email').value.trim()
+            const password = document.getElementById('login-password').value
+
+            let valid = true
+            if (!validateEmail(email)) { showFieldError('login-email'); valid = false }
+            if (password.length < 6) { showFieldError('login-password'); valid = false }
+            if (!valid) return
+
+            const submitBtn = document.getElementById('login-submit')
+            setLoading(submitBtn, true)
+
+            try {
+                await logIn(email, password)
+                // onAuthChange will redirect
+            } catch (err) {
+                showError(getFirebaseErrorMessage(err.code))
+                submitBtn.querySelector('span').textContent = 'Log In'
+                setLoading(submitBtn, false)
+            }
+        })
+
+        // --- Signup ---
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault()
+            hideError()
+            clearFieldErrors()
+
+            const fullName = document.getElementById('fullname').value.trim()
+            const email = document.getElementById('signup-email').value.trim()
+            const password = document.getElementById('signup-password').value
+
+            let valid = true
+            if (fullName.length < 2) { showFieldError('fullname'); valid = false }
+            if (!validateEmail(email)) { showFieldError('signup-email'); valid = false }
+            if (password.length < 6) { showFieldError('signup-password'); valid = false }
+            if (!valid) return
+
+            const submitBtn = document.getElementById('signup-submit')
+            setLoading(submitBtn, true)
+
+            try {
+                await signUp(email, password, fullName)
+                // onAuthChange will redirect
+            } catch (err) {
+                showError(getFirebaseErrorMessage(err.code))
+                submitBtn.querySelector('span').textContent = 'Sign Up'
+                setLoading(submitBtn, false)
+            }
+        })
+
+        // --- Google Sign In ---
+        googleBtn.addEventListener('click', async () => {
+            hideError()
+            try {
+                await googleSignIn()
+                // onAuthChange will redirect
+            } catch (err) {
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    showError(getFirebaseErrorMessage(err.code))
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+ ========================================================================================================
+|                                    TABLE DES CLASSES CSS THÉMATIQUES                                   |
+ ========================================================================================================
+|  Ces classes s'adaptent automatiquement au thème (Clair/Sombre) via les variables dans (_variables.scss) |
+ ========================================================================================================
+
+ --------------------------------------------------------------------------------------------------------
+| CATEGORIE        | NOM DE LA CLASSE                   | DESCRIPTION / UTILISATION                     |
+|------------------|------------------------------------|-----------------------------------------------|
+| **BACKGROUNDS**  | `bg-themed-body`                   | Couleur de fond principale de la page body    |
+|                  | `bg-themed-panel`                  | Panneau principal (ex: zone centrale grisâtre)|
+|                  | `bg-themed-card`                   | Fond des cartes (ex: widgets, stats)          |
+|                  | `bg-themed-card-alt`               | Fond alternatif (ex: cercles d'icônes, inputs)|
+|                  | `bg-themed-sidebar`                | Fond de la barre latérale                     |
+|                  | `bg-themed-input`                  | Fond des champs de saisie (inputs)            |
+|------------------|------------------------------------|-----------------------------------------------|
+| **TEXTE**        | `text-text-themed`                 | Texte principal (Titres, Contenu important)   |
+|                  | `text-text-themed-secondary`       | Texte secondaire (Descriptions, Sous-titres)  |
+|                  | `text-text-themed-muted`           | Texte très discret (Icônes inactives)         |
+|                  | `text-text-themed-inverse`         | Texte inversé (ex: texte blanc sur bouton noir)|
+|------------------|------------------------------------|-----------------------------------------------|
+| **BORDURES**     | `border-border-themed`             | Bordure standard des cartes                   |
+|                  | `border-border-themed-light`       | Bordure légère (séparateurs discrets)         |
+|                  | `border-border-themed-focus`       | Bordure au focus (autour des inputs actifs)   |
+|------------------|------------------------------------|-----------------------------------------------|
+| **ACCENTS**      | `bg-accent-primary`                | Fond bouton principal (Noir/Blanc inversé)    |
+| (Intéractions)   | `hover:bg-accent-primary-hover`    | Survol du bouton principal                    |
+|                  | `text-accent-danger`               | Texte d'alerte (Rouge)                        |
+|                  | `hover:bg-accent-danger-hover`     | Survol des boutons danger (Fond rouge léger)  |
+ --------------------------------------------------------------------------------------------------------
+
+ ========================================================================================================
+|                                      COMMENT MODIFIER LES COULEURS ?                                   |
+ ========================================================================================================
+| 1. Ouvre le fichier : `assets/css/_variables.scss`                                                     |
+| 2. Modifie les codes hexadécimaux dans `:root` (Mode Clair) ou `.dark` (Mode Sombre)                   |
+| 3. Sauvegarde. Le script `npm run dev` mettra tout à jour automatiquement.                             |
+ ========================================================================================================

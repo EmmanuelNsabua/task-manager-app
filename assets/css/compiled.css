@@ -1,0 +1,110 @@
+:root {
+  --bg-body: #ffffff;
+  --bg-panel: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f3f4f6;
+  --bg-sidebar: #000000;
+  --bg-input: #ffffff;
+  --bg-button-hover: #f3f4f6;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-inverse: #ffffff;
+  --border-default: #e5e7eb;
+  --border-light: #f3f4f6;
+  --border-focus: #111827;
+  --accent-primary: #121213;
+  --accent-primary-hover: #2d2d2d;
+  --accent-danger: #dc2626;
+  --accent-danger-hover: rgba(220, 38, 38, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.dark {
+  --bg-body: rgb(25, 25, 25);
+  --bg-panel: #0e0e0e;
+  --bg-card: #111111;
+  --bg-card-alt: #171818;
+  --bg-sidebar: #000000;
+  --bg-input: #161515;
+  --bg-button-hover: #323232;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-inverse: #111827;
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-light: rgba(255, 255, 255, 0.05);
+  --border-focus: #ffffff;
+  --accent-primary: #ffffff;
+  --accent-primary-hover: #dbdbdb;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.bg-body {
+  background-color: var(--bg-body);
+}
+
+.bg-panel {
+  background-color: var(--bg-panel);
+}
+
+.bg-card {
+  background-color: var(--bg-card);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.border-themed {
+  border-color: var(--border-default);
+}
+
+.btn-primary {
+  background-color: var(--accent-primary);
+  color: var(--text-inverse);
+}
+.btn-primary:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.transition-opacity {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/*# sourceMappingURL=compiled.css.map */
