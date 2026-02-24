@@ -133,71 +133,115 @@ function updateUserDisplay(user) {
 }
 
 // ==========================================================================
-// NOTIFICATIONS — Overdue task alerts
+// NOTIFICATIONS — Read/Unread System
 // ==========================================================================
 
-function updateNotifications() {
-    const allTasks = getAllTasks()
-    const badge = document.getElementById('notification-badge')
-    const list = document.getElementById('notification-list')
+// Notification state: array of { id, icon, text, type, read, createdAt }
+let _notifications = []
+let _notifExpanded = false
+const NOTIF_VISIBLE = 4
 
-    // Find overdue tasks
+function buildNotifications() {
+    const allTasks = getAllTasks()
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    const overdue = allTasks.filter(t => {
-        if (t.completed || !t.date) return false
-        const due = new Date(t.date)
-        due.setHours(0, 0, 0, 0)
-        return due < today
-    })
 
-    // Today's due tasks
-    const todayDue = allTasks.filter(t => {
-        if (t.completed || !t.date) return false
-        const due = new Date(t.date)
-        due.setHours(0, 0, 0, 0)
-        return due.getTime() === today.getTime()
-    })
+    const fresh = []
 
-    const notifications = []
+    // Overdue tasks (newest first by due date descending)
+    allTasks
+        .filter(t => !t.completed && t.date && (() => { const d = new Date(t.date); d.setHours(0, 0, 0, 0); return d < today })())
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .forEach(t => fresh.push({ id: `overdue-${t.id}`, icon: '⚠️', text: `"${t.title}" is overdue`, type: 'overdue', read: false, createdAt: Date.now() }))
 
-    overdue.forEach(t => {
-        notifications.push({
-            icon: '⚠️',
-            text: `"${t.title}" is overdue`,
-            type: 'overdue'
-        })
-    })
+    // Today's tasks
+    allTasks
+        .filter(t => !t.completed && t.date && (() => { const d = new Date(t.date); d.setHours(0, 0, 0, 0); return d.getTime() === today.getTime() })())
+        .forEach(t => fresh.push({ id: `today-${t.id}`, icon: '📋', text: `"${t.title}" is due today`, type: 'today', read: false, createdAt: Date.now() }))
 
-    todayDue.forEach(t => {
-        notifications.push({
-            icon: '📋',
-            text: `"${t.title}" is due today`,
-            type: 'today'
-        })
-    })
+    // Merge: keep existing read states, add new notifications at the front
+    const existingIds = new Set(_notifications.map(n => n.id))
+    const brandNew = fresh.filter(n => !existingIds.has(n.id))
+    // Remove stale (task no longer matches)
+    const freshIds = new Set(fresh.map(n => n.id))
+    _notifications = _notifications.filter(n => freshIds.has(n.id))
+    // Prepend new ones (newest first)
+    _notifications = [...brandNew, ..._notifications]
+}
 
-    // Update badge
+function updateNotifications() {
+    buildNotifications()
+    _refreshNotificationUI()
+}
+
+function _refreshNotificationUI() {
+    const badge = document.getElementById('notification-badge')
+    const list = document.getElementById('notification-list')
+    const footer = document.getElementById('notification-footer')
+    const markAllBtn = document.getElementById('mark-all-read-btn')
+
+    const unread = _notifications.filter(n => !n.read).length
+    const total = _notifications.length
+
+    // Badge
     if (badge) {
-        if (notifications.length > 0) {
+        if (unread > 0) {
             badge.classList.remove('hidden')
-            badge.textContent = notifications.length
+            badge.textContent = unread > 9 ? '9+' : unread
         } else {
             badge.classList.add('hidden')
         }
     }
 
-    // Update list
-    if (list) {
-        if (notifications.length === 0) {
-            list.innerHTML = '<p class="text-sm text-text-themed-muted text-center py-6">No notifications</p>'
+    // Mark all read button
+    if (markAllBtn) {
+        markAllBtn.classList.toggle('hidden', unread === 0)
+    }
+
+    if (!list) return
+
+    if (total === 0) {
+        list.innerHTML = '<p class="text-sm text-text-themed-muted text-center py-6">No notifications</p>'
+        if (footer) footer.classList.add('hidden')
+        return
+    }
+
+    const visible = _notifExpanded ? _notifications : _notifications.slice(0, NOTIF_VISIBLE)
+    list.innerHTML = ''
+
+    visible.forEach((n, idx) => {
+        const el = document.createElement('div')
+        el.className = `flex items-start gap-3 p-3 rounded-xl cursor-pointer transition-colors ${n.read ? 'opacity-60' : 'bg-accent-primary/5'
+            } hover:bg-themed-card-alt`
+        el.dataset.notifId = n.id
+        el.innerHTML = `
+            <span class="text-base mt-0.5 flex-shrink-0">${n.icon}</span>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm text-text-themed leading-snug">${escapeHtml(n.text)}</p>
+                ${!n.read ? '<span class="text-[10px] font-bold text-accent-primary uppercase tracking-wide">New</span>' : ''}
+            </div>
+            ${!n.read ? '<span class="w-2 h-2 rounded-full bg-accent-primary flex-shrink-0 mt-1.5"></span>' : ''}
+        `
+        el.addEventListener('click', () => {
+            const notif = _notifications.find(x => x.id === n.id)
+            if (notif) notif.read = true
+            _refreshNotificationUI()
+        })
+        list.appendChild(el)
+    })
+
+    // Show/hide "See all" footer
+    if (footer) {
+        if (total > NOTIF_VISIBLE) {
+            footer.classList.remove('hidden')
+            const seeAllBtn = document.getElementById('see-all-notifications-btn')
+            if (seeAllBtn) {
+                seeAllBtn.textContent = _notifExpanded
+                    ? 'Show less'
+                    : `See all ${total} notifications`
+            }
         } else {
-            list.innerHTML = notifications.map(n => `
-                <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-themed-card-alt transition-colors">
-                    <span class="text-lg">${n.icon}</span>
-                    <p class="text-sm text-text-themed">${escapeHtml(n.text)}</p>
-                </div>
-            `).join('')
+            footer.classList.add('hidden')
         }
     }
 }
@@ -279,12 +323,17 @@ function initDropdowns() {
     const notifDropdown = document.getElementById('notification-dropdown')
     const profileBtn = document.getElementById('profile-btn')
     const profileDropdown = document.getElementById('profile-dropdown')
+    const markAllBtn = document.getElementById('mark-all-read-btn')
+    const seeAllBtn = document.getElementById('see-all-notifications-btn')
 
     // Notification toggle
     notifBtn?.addEventListener('click', (e) => {
         e.stopPropagation()
+        const isOpen = !notifDropdown?.classList.contains('hidden')
         notifDropdown?.classList.toggle('hidden')
         profileDropdown?.classList.add('hidden')
+        // Refresh when opening
+        if (!isOpen) _refreshNotificationUI()
     })
 
     // Profile toggle
@@ -294,13 +343,30 @@ function initDropdowns() {
         notifDropdown?.classList.add('hidden')
     })
 
-    // Close on outside click
+    // Mark all as read
+    markAllBtn?.addEventListener('click', (e) => {
+        e.stopPropagation()
+        _notifications.forEach(n => { n.read = true })
+        _refreshNotificationUI()
+    })
+
+    // See all / Show less toggle
+    seeAllBtn?.addEventListener('click', (e) => {
+        e.stopPropagation()
+        _notifExpanded = !_notifExpanded
+        _refreshNotificationUI()
+    })
+
+    // Close on outside click — also reset expanded state
     document.addEventListener('click', () => {
+        if (!notifDropdown?.classList.contains('hidden')) {
+            _notifExpanded = false
+        }
         notifDropdown?.classList.add('hidden')
         profileDropdown?.classList.add('hidden')
     })
 
-    // Prevent closing when clicking inside dropdown
+    // Prevent closing when clicking inside dropdowns
     notifDropdown?.addEventListener('click', (e) => e.stopPropagation())
     profileDropdown?.addEventListener('click', (e) => e.stopPropagation())
 }
